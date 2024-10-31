@@ -1,0 +1,30 @@
+services:
+  extension_test.db:
+    container_name: extension_test.db
+    ports:
+      - 5432:5432
+    build:
+      context: ./db
+      dockerfile: ./Dockerfile
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    networks:
+      - extension_test.network
+
+  extension_test.app:
+    container_name: extension_test.app
+    depends_on:
+      - extension_test.db
+    build:
+      context: ./app
+      dockerfile: ./Dockerfile
+    ports:
+      - 8888:8888
+    networks:
+      - extension_test.network
+
+networks:
+  extension_test.network:
+    name: extension_test.network
